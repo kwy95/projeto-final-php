@@ -15,7 +15,7 @@ class Produto {
 	}
 
 	public function setId($id) {
-		$this->id = $id;	
+		$this->id = $id;
 	}
 
 	public function getNome() {
@@ -23,7 +23,7 @@ class Produto {
 	}
 
 	public function setNome($nome) {
-		$this->nome = $nome;	
+		$this->nome = $nome;
 	}
 
 	public function getDescricao() {
@@ -31,7 +31,7 @@ class Produto {
 	}
 
 	public function setDescricao($descricao) {
-		$this->descricao = $descricao;	
+		$this->descricao = $descricao;
 	}
 
 	public function getPreco() {
@@ -39,7 +39,7 @@ class Produto {
 	}
 
 	public function setPreco($preco) {
-		$this->preco = $preco;	
+		$this->preco = $preco;
 	}
 
 	public function getEstoque() {
@@ -47,7 +47,7 @@ class Produto {
 	}
 
 	public function setEstoque($estoque) {
-		$this->estoque = $estoque;	
+		$this->estoque = $estoque;
 	}
 
 	public function getImagem() {
@@ -58,6 +58,6 @@ class Produto {
 	}
 
 	public function setImagem($imagem) {
-		$this->imagem = $imagem;	
+		$this->imagem = $imagem;
 	}
 }

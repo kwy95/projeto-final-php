@@ -1,7 +1,6 @@
 <?php
 namespace App\Controller;
 
-
 use App\Repository\Banco;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -11,16 +10,16 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class LojaController extends AbstractController {
 	/**
-	* @Route("/")
+	* @Route("/", name="app_loja_home")
 	*/
 	public function index() {
 		return $this->render('loja/index.html.twig', [
-					    
+
 		]);
 	}
 
 	/**
-	* @Route("/loja/finalizar")
+	* @Route("/loja/finalizar", name="app_loja_finalizar")
 	*/
 	public function finalizar(Request $request, SessionInterface $session) {
 		$email = $request->request->get('email');
@@ -28,7 +27,7 @@ class LojaController extends AbstractController {
 
 		$banco = new Banco();
 		$cliente = $banco->login($email, $senha);
-		
+
 		$msg_erro = '';
 		if ($cliente === false) {
 			$msg_erro = 'Login e/ou senha inválido.';
@@ -40,7 +39,7 @@ class LojaController extends AbstractController {
 
 
 		return $this->render('loja/finalizar.html.twig', [
-			'msg_erro' => $msg_erro			    
+			'msg_erro' => $msg_erro
 		]);
 	}
 
@@ -54,7 +53,7 @@ class LojaController extends AbstractController {
 
 		$session->remove('carrinho');
 		$session->remove('carrinho_total');
-		
+
 		return $this->render('loja/sucesso.html.twig', [
 			'carrinho' => $carrinho,
 			'total' => $total,
@@ -75,11 +74,11 @@ class LojaController extends AbstractController {
 
 		return $this->render('loja/carrinho.html.twig', [
 			'carrinho' => $carrinho,
-			'total' => $total	    
+			'total' => $total
 		]);
 	}
 
-	
+
 	/**
 	* @Route("/carrinho/{id}")
 	*/
@@ -98,7 +97,7 @@ class LojaController extends AbstractController {
 			$totalItem = $produto->getPreco();
 			$carrinho[$produto->getId()] = array('produto' => $produto, 'quantidade' => 1, 'total' => $totalItem);
 		}
-		
+
 		$session->set('carrinho', $carrinho);
 
 		$total = 0;
@@ -106,7 +105,7 @@ class LojaController extends AbstractController {
 			$total += $item['total'];
 		}
 		$session->set('carrinho_total', $total);
-		
+
 		return $this->redirectToRoute('app_loja_carrinho');
 	}
 }

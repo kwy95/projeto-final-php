@@ -15,9 +15,9 @@ class ProdutoController extends AbstractController {
 	public function view($id) {
 		$banco = new Banco();
 		$produto = $banco->getProduto($id);
-		
+
 		return $this->render('produto/view.html.twig', [
-			'produto' => $produto		    
+			'produto' => $produto
 		]);
 	}
 
@@ -29,19 +29,24 @@ class ProdutoController extends AbstractController {
 		$produtos = $banco->getProdutosByCategoria($nome);
 
 		return $this->render('produto/categoria.html.twig', [
-			'produtos' => $produtos    
+			'produtos' => $produtos
 		]);
 	}
 
 	/**
 	* @Route("/busca")
 	*/
-	public function buscar() {
+	public function buscar(Request $request) {
+		$busca = trim($request->request->get('busca', ''));
+		$termos = explode(' ', $busca);
+
+		$banco = new Banco();
+		$produtos = $banco->getProdutosBusca($termos);
+
+
 		return $this->render('produto/buscar.html.twig', [
-					    
+			'busca' => $busca,
+			'produtos' => $produtos
 		]);
 	}
-
-
-	
 }
