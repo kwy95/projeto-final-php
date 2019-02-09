@@ -37,6 +37,29 @@ class Cliente {
 	}
 
 	public function setTelefone($telefone) {
+		$digitos = '';
+		for($i=0; $i<strlen($telefone); $i++) {
+			if(is_numeric($telefone[$i])) {
+				$digitos = $digitos . $telefone[$i];
+			}
+		}
+		switch (strlen($digitos)) {
+			case 11:
+				$telefone = '(' . substr($digitos, 0, 2) . ') ' . substr($digitos, 2, 5) . '-' . substr($digitos, 7);
+				break;
+			case 10:
+				$telefone = '(' . substr($digitos, 0, 2) . ') ' . substr($digitos, 2, 4) . '-' . substr($digitos, 6);
+				break;
+			case 9:
+				$telefone = substr($digitos, 0, 5) . '-' . substr($digitos, 5);
+				break;
+			case 8:
+				$telefone = substr($digitos, 0, 4) . '-' . substr($digitos, 4);
+				break;
+			default:
+				$telefone = '';
+				break;
+		}
 		$this->telefone = $telefone;
 	}
 

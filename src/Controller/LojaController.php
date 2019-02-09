@@ -13,8 +13,20 @@ class LojaController extends AbstractController {
 	* @Route("/", name="app_loja_home")
 	*/
 	public function index() {
-		return $this->render('loja/index.html.twig', [
+		$banco = new Banco();
+		$ids = $banco->getIdsProdutos();
+		$id1 = $ids[random_int(0, count($ids)-1)];
+		$id2 = $ids[random_int(0, count($ids)-1)];
+		while($id1 == $id2) {
+			$id2 = $ids[random_int(0, count($ids)-1)];
+		}
 
+		$produto1 = $banco->getProduto($id1);
+		$produto2 = $banco->getProduto($id2);
+
+		return $this->render('loja/index.html.twig', [
+			'produto1' => $produto1,
+			'produto2' => $produto2
 		]);
 	}
 
@@ -87,24 +99,54 @@ class LojaController extends AbstractController {
 		$produto = $banco->getProduto($id);
 
 		$carrinho = $session->get('carrinho');
-		if (is_array($carrinho) && array_key_exists($produto->getId(), $carrinho)) {
-			$quantidade = $carrinho[$produto->getId()]['quantidade'] + 1;
+		if (is_array($carrinho) && array_key_exists($id, $carrinho)) {
+			$quantidade = min($carrinho[$id]['quantidade'] + 1, $produto->getEstoque());
 			$totalItem = $quantidade * $produto->getPreco();
-			$carrinho[$produto->getId()]['quantidade'] = $quantidade;
-			$carrinho[$produto->getId()]['total'] = $totalItem;
+			$carrinho[$id]['quantidade'] = $quantidade;
+			$carrinho[$id]['total'] = $totalItem;
 		}
 		else {
 			$totalItem = $produto->getPreco();
-			$carrinho[$produto->getId()] = array('produto' => $produto, 'quantidade' => 1, 'total' => $totalItem);
+			$carrinho[$id] = array('produto' => $produto, 'quantidade' => 1, 'total' => $totalItem);
 		}
-
-		$session->set('carrinho', $carrinho);
 
 		$total = 0;
 		foreach ($carrinho as $item) {
 			$total += $item['total'];
 		}
-		$session->set('carrinho_total', $total);
+		$carrinho[$id]['total'] = number_format($carrinho[$id]['total'], 2, ',', '.');
+		$session->set('carrinho', $carrinho);
+		$session->set('carrinho_total', number_format($total, 2, ',', '.'));
+
+		return $this->redirectToRoute('app_loja_carrinho');
+	}
+
+	/**
+	* @Route("/carrinho/{id}/alterar")
+	*/
+	public function carrinhoAlterar($id, Request $request, SessionInterface $session) {
+		$banco = new Banco();
+		$produto = $banco->getProduto($id);
+		$quantidade = $request->request->get('quantidade');
+		$carrinho = $session->get('carrinho');
+		//$produto = $carrinho[$id]['produto'];
+		//$carrinho[$id]['total'] = 0;
+		if($quantidade == 0) {
+			unset($carrinho[$id]);
+		} else {
+			$carrinho[$id]['quantidade'] = min($quantidade, $produto->getEstoque());
+			$carrinho[$id]['total'] = $carrinho[$id]['quantidade'] * $produto->getPreco();
+		}
+
+		$total = 0;
+		foreach ($carrinho as $item) {
+			$total += $item['total'];
+		}
+		if(isset($carrinho[$id])) {
+			$carrinho[$id]['total'] = number_format($carrinho[$id]['total'], 2, ',', '.');
+		}
+		$session->set('carrinho', $carrinho);
+		$session->set('carrinho_total', number_format($total, 2, ',', '.'));
 
 		return $this->redirectToRoute('app_loja_carrinho');
 	}

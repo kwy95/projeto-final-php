@@ -3,12 +3,26 @@
 <main role="main">
 
 <h2>Produtos em Destaque<h2>
-<div class="container">
+<br />
 
-<a href="/produto/1">
-<img src="/images/uno.jpg" width="200">
-</a>
-</div>
+<div class="container marketing">
+
+    <!-- Three columns of text below the carousel -->
+    <div class="row">
+      <div class="col-lg-4">
+        <img src="/images/{{ produto1.imagem }}" width="200">
+        <h1>{{ produto1.nome }}</h1>
+        <p>{{ produto1.descricao }}</p>
+        <p><a href="/produto/{{ produto1.id }}" role="button">Ver detalhes &raquo;</a></p>
+      </div><!-- /.col-lg-4 -->
+      <div class="col-lg-4">
+        <img src="/images/{{ produto2.imagem }}" width="200">
+        <h1>{{ produto2.nome }}</h1>
+        <p>{{ produto2.descricao }}</p>
+        <p><a href="/produto/{{ produto2.id }}" role="button">Ver detalhes &raquo;</a></p>
+      </div><!-- /.col-lg-4 -->
+    </div><!-- /.row -->
+
 </main>
 
     <!-- Optional JavaScript -->

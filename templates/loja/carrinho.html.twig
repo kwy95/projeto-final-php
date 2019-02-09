@@ -8,6 +8,7 @@
 		<th>Imagem</th>
 		<th>Nome do Produto</th>
 		<th>Quantidade</th>
+		<th>Estoque</th>
 		<th>Preço</th>
 		<th>Total</th>
 	</tr>
@@ -18,11 +19,12 @@
 		<td><img src="/images/{{ item.produto.imagem }}" width="50"></td>
 		<td>{{ item.produto.nome }}</td>
 		<td>
-<form action="/loja/carrinho/{{ item.produto.id }}/alterar" method="post">
-<input type="text" name="quantidade" value="{{ item.quantidade }}">
-<input type="submit" value="Alterar">
-</form>
+			<form action="/carrinho/{{ item.produto.id }}/alterar" method="post">
+			<input type="text" name="quantidade" value="{{ item.quantidade }}">
+			<input type="submit" value="Alterar">
+		</form>
 		</td>
+		<td>{{ item.produto.estoque }}</td>
 		<td>R$ {{ item.produto.preco }}</td>
 		<td>R$ {{ item.total }}</td>
 	</tr>
@@ -36,3 +38,6 @@ O total da sua compra é: R$ {{ total }}
 <a href="/loja/finalizar">
 <input type="button" value="Finalizar Pedido" />
 </a>
+
+  </body>
+</html>

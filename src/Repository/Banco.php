@@ -8,7 +8,7 @@ class Banco {
 	private function conecta() {
 		$host = 'localhost';
 		$user = 'root';
-		$pass = 'senha';
+		$pass = 'senha';//ARRUMAR A SENHA!!
 		$base = 'verao-2019';
 		$banco = new \mysqli($host, $user, $pass, $base);
 		if (\mysqli_connect_errno()) {
@@ -57,6 +57,18 @@ class Banco {
 		return $cliente;
 	}
 
+	public function getIdsProdutos() {
+		$strsql = "SELECT p.id FROM produtos as p";
+		$resultados = $this->getResults($strsql);
+
+		$ids = array();
+		while($linha = $resultados->fetch_object()) {
+			$ids[] = $linha->id;
+		}
+
+		return $ids;
+	}
+
 	public function getProduto($id) {
 		$strsql = "select * from produtos where id = " . (int) $id;
 
@@ -101,11 +113,11 @@ class Banco {
 	}
 
 	private function insert($tabela, $campos, $entry) {
-		$sqlstr = "INSERT INTO $tabela (";
-		foreach ($campos as $campo) {
+		$sqlstr = "INSERT INTO $tabela $campos values (";
+		/*foreach ($campos as $campo) {
 			$sqlstr = $sqlstr . "$campo, ";
 		}
-		$sqlstr = substr($sqlstr, 0, -2) . ") values (";
+		$sqlstr = substr($sqlstr, 0, -2) . ") values (";*/
 		foreach($entry as $valor) {
 			$sqlstr = $sqlstr . "'$valor', ";
 		}
@@ -115,11 +127,11 @@ class Banco {
 			echo $sqlstr . PHP_EOL;
 			exit($banco->error);
 		}
-
 	}
 
 	public function insertCliente($cliente) {
-		$campos = [ 'nome', 'email', 'telefone', 'senha' ];
+		//$campos = [ 'nome', 'email', 'telefone', 'senha' ];
+		$campos = "(nome, email, telefone, senha)";
 		$values = [ $cliente->getNome(), $cliente->getEmail(), $cliente->getTelefone(), $cliente->getSenha() ];
 		/*$nome = $cliente->getNome();
 		$email = $cliente->getEmail();
@@ -133,6 +145,13 @@ class Banco {
 		$this->insert('clientes', $campos, $values);
 	}
 
+	public function insertProduto($produto) {
+		$campos = "(nome, descricao, preco, estoque, imagem)";
+		$values = [ $produto->getNome(), $produto->getDescricao(), $produto->getPreco(), $produto->getEstoque(), $produto->getImagem() ];
+
+		$this->insert('produtos', $campos, $values);
+	}
+
 	public function login($email, $senha) {
 		$senha = md5($senha);
 		$strsql = "select * from clientes where email = '$email' and senha = '$senha'";
@@ -140,7 +159,7 @@ class Banco {
 		$resultados = $this->getResults($strsql);
 
 		$linha = $resultados->fetch_object();
-		
+
 		if (!$linha) {
 			return false;
 		}
